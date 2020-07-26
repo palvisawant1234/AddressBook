@@ -1,3 +1,5 @@
+package add;
+
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -7,39 +9,13 @@ import java.util.Scanner;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
-class BubbleSort
-{
-	public static <P extends Comparable<P>> void bubble(P[] arr,int length) 
-	{	
-		int n=length;
-		for(int i=0;i<n-1;i++) 
-		{
-			for(int j=0;j<n-i-1;j++)
-			{
-				if(arr[j].compareTo(arr[j+1])>0)
-				{
-					P temp=arr[j];
-					arr[j]=arr[j+1];
-					arr[j+1]=temp;
-				}
-			}
-			
-		}
-		for(int x=0;x<n;++x)
-		{
-			System.out.print(arr[x]+" ");
-			System.out.println();
-		}
-	}
-}  
-
 class AddressBook extends BubbleSort {
     static Scanner sc = new Scanner(System.in);
 
     public static void main(String[] args) {
     	System.out.println("Welcome to AddressBook");
         while (true) {
-            System.out.println("1.Create \n2.Add \n3.Delete \n4.Modify \n5.sort \n6.Search \n7.Read \n8.Exit");
+            System.out.println("1.Create New Addressbook \n2.Add Person\n3.Delete Person \n4.Modify Person \n5.Sort \n6.Search Person \n7.Read Addressbook \n8.Exit");
             int ch = Integer.parseInt(sc.nextLine());
             switch (ch) {
                 case 1:System.out.println("It will overwrite the previous contents \n Do you want to continue? Y or N");
@@ -48,7 +24,6 @@ class AddressBook extends BubbleSort {
 					try {
 						create();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
                     break;
@@ -56,16 +31,19 @@ class AddressBook extends BubbleSort {
 				try {
 					add();
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
                     break;
                 case 3:
-                    delete();
+                	System.out.println("Enter Pno to delete");
+                    String n = sc.nextLine();
+                    delete(n);
+                    System.out.println("Deleted Successfuly");
                     break;
-
                 case 4:
-                    modify();
+                	System.out.println("Enter Pno to modify details");
+                    String no = sc.nextLine();
+                    modify(no);
                     break;
                 case 5:
                     System.out.println("Enter column to sort by:");
@@ -89,28 +67,28 @@ class AddressBook extends BubbleSort {
     }
 
     static void create() throws IOException {
-        JSONObject obj = new JSONObject();
-        JSONArray arr1 = new JSONArray();
-        JSONArray arr2 = new JSONArray();
-        JSONObject obj1 = new JSONObject();
-        JSONObject obj2 = new JSONObject();
+        JSONObject addressbook = new JSONObject();
+        JSONArray data = new JSONArray();
+        JSONArray address = new JSONArray();
+        JSONObject person = new JSONObject();
+        JSONObject addressobj = new JSONObject();
         System.out.println("Enter name");
-        obj1.put("name", sc.nextLine());
+        person.put("name", sc.nextLine());
         System.out.println("Enter Apartment name");
-        obj2.put("aprt", sc.nextLine());
+        addressobj.put("aprt", sc.nextLine());
         System.out.println("Enter City");
-        obj2.put("city", sc.nextLine());
+        addressobj.put("city", sc.nextLine());
         System.out.println("Enter State");
-        obj2.put("state", sc.nextLine());
+        addressobj.put("state", sc.nextLine());
         System.out.println("Enter Zipcode");
-        obj2.put("zip", Long.parseLong(sc.nextLine()));
+        addressobj.put("zip", Long.parseLong(sc.nextLine()));
         System.out.println("Enter PhoneNo");
-        obj1.put("pno", Long.parseLong(sc.nextLine()));
-        arr1.add(obj1);
-        arr2.add(obj2);
-        obj1.put("Address", arr2);
-        obj.put("data", arr1);
-        writeFile(obj.toString());
+        person.put("pno", Long.parseLong(sc.nextLine()));
+        data.add(person);
+        address.add(addressobj);
+        person.put("Address", address);
+        addressbook.put("data", data);
+        writeFile(addressbook.toString());
     }
     
     static void writeFile(String s) throws IOException {
@@ -122,9 +100,9 @@ class AddressBook extends BubbleSort {
     static void read() {
         JSONParser parser = new JSONParser();
         try {
-            Object o = parser.parse(new FileReader("book.json"));
-            JSONObject jobj = (JSONObject) o;
-            System.out.println(o.toString());
+            Object obj = parser.parse(new FileReader("book.json"));
+            JSONObject addressbook = (JSONObject) obj;
+            System.out.println(obj.toString());
         } catch (Exception e) {
         }
     }
@@ -134,73 +112,66 @@ class AddressBook extends BubbleSort {
         JSONParser parser = new JSONParser();
         try {
             Object o = parser.parse(new FileReader("book.json"));
-            JSONObject obj = (JSONObject) o;
-            JSONArray arr = (JSONArray) obj.get("data");
-            JSONObject obj1 = new JSONObject();
-            JSONObject obj2 = new JSONObject();
-
-            JSONArray arr2 = new JSONArray();
+            JSONObject addressbook = (JSONObject) o;
+            JSONArray data = (JSONArray) addressbook.get("data");
+            JSONObject person = new JSONObject();
+            JSONObject addressobj = new JSONObject();
+            JSONArray address = new JSONArray();
             System.out.println("Enter name");
-            obj1.put("name", sc.nextLine());
+            person.put("name", sc.nextLine());
             System.out.println("Enter Apartment name");
-            obj2.put("aprt", sc.nextLine());
+            addressobj.put("aprt", sc.nextLine());
             System.out.println("Enter City");
-            obj2.put("city", sc.nextLine());
+            addressobj.put("city", sc.nextLine());
             System.out.println("Enter State");
-            obj2.put("state", sc.nextLine());
+            addressobj.put("state", sc.nextLine());
             System.out.println("Enter Zipcode");
-            obj2.put("zip", Long.parseLong(sc.nextLine()));
+            addressobj.put("zip", Long.parseLong(sc.nextLine()));
             System.out.println("Enter PhoneNo");
-            obj1.put("pno", Long.parseLong(sc.nextLine()));
-
-            arr.add(obj1);
-            arr2.add(obj2);
-            obj1.put("Address", arr2);
-            // obj1.put("Address", arr2);
-            // obj.put("data", arr);
-            writeFile(obj.toString());
+            person.put("pno", Long.parseLong(sc.nextLine()));
+            data.add(person);
+            address.add(addressobj);
+            person.put("Address", address);
+            writeFile(addressbook.toString());
         } catch (Exception e) {
         }
     }
 
     
-    static boolean delete() {
+    static boolean delete(String n) {
         JSONParser parser = new JSONParser();
         try {
-            Object o = parser.parse(new FileReader("book.json"));
-            JSONObject jobj = (JSONObject) o;
-            String str = jobj.toString();
+            Object obj = parser.parse(new FileReader("book.json"));
+            JSONObject addressbook = (JSONObject) obj;
+            String str = addressbook.toString();
             String s1 = "";
-            System.out.println("Enter Pno to delete");
-            String n = sc.nextLine();
-            JSONArray arr = (JSONArray) jobj.get("data");
-            Iterator i = arr.iterator();
+            JSONArray data = (JSONArray) addressbook.get("data");
+            Iterator i = data.iterator();
             while (i.hasNext()) {
-                JSONObject o1 = (JSONObject) i.next();
-                System.out.println(o1.get("pno"));
-                if (o1.get("pno").toString().equals(n) == true) {
-                    s1 += o1.toString();
-                    System.out.println(s1 + "Deleted");
+                JSONObject person = (JSONObject) i.next();
+                if (person.get("pno").toString().equals(n) == true) {
+                    s1 += person.toString();
                     break;
-                } else if (o1.get("pno").toString().equals(n) == false && i.hasNext() == false) {
+                } else if (person.get("pno").toString().equals(n) == false && i.hasNext() == false) {
                     System.out.println("No such element present");
                     return false;
                 }
             }
             String str3 = str.replace(s1, "");
-            Object o4 = parser.parse(str3);
-            JSONObject jobject1 = (JSONObject) o4;
+            Object updated = parser.parse(str3);
+            JSONObject newaddressbook = (JSONObject) updated;
             FileWriter fs = new FileWriter("book.json");
-            fs.write(jobject1.toJSONString());
+            fs.write(newaddressbook.toJSONString());
             fs.close();
         } catch (Exception e) {
         }
         return true;
     }
 
-    static void modify() {
+    static void modify(String n) {
         try {
-            if (delete() == true) {
+            if (delete(n) == true) {
+            	System.out.println("Enter updated details");
                 add();
             } else {
                 System.out.println("Element not found");
@@ -214,23 +185,22 @@ class AddressBook extends BubbleSort {
         JSONParser parser = new JSONParser();
         try {
             Object o = parser.parse(new FileReader("book.json"));
-            JSONObject jobj = (JSONObject) o;
-            String str = jobj.toString();
-            JSONArray array = (JSONArray) jobj.get("data");
-            str3 = new String[array.size()];
+            JSONObject addressbook = (JSONObject) o;
+            String str = addressbook.toString();
+            JSONArray data = (JSONArray) addressbook.get("data");
+            str3 = new String[data.size()];
 
-            for (int i = 0; i < array.size(); i++) {
+            for (int i = 0; i < data.size(); i++) {
 
                 if (s.equals("name") || s.equals("pno")) {
-                    JSONObject o1 = (JSONObject) array.get(i);
-                    str3[i] = o1.get(s).toString().toLowerCase();
+                    JSONObject person = (JSONObject) data.get(i);
+                    str3[i] = person.get(s).toString().toLowerCase();
                 } else {
 
-                    JSONObject o1 = (JSONObject) array.get(i);
-                    JSONArray ja = (JSONArray) o1.get("Address");
+                    JSONObject person = (JSONObject) data.get(i);
+                    JSONArray ja = (JSONArray) person.get("Address");
                     JSONObject oo = (JSONObject) ja.get(0);
                     str3[i] = oo.get(s).toString().toLowerCase();
-                    System.out.println("ASdasdasdas");
                 }
             }
 
@@ -243,7 +213,7 @@ class AddressBook extends BubbleSort {
             {
                 for (int j = 0; j < str3.length; j++) {
 
-                    JSONObject anothernewobj = (JSONObject) array.get(j);
+                    JSONObject anothernewobj = (JSONObject) data.get(j);
                     if (s.equals("name") || s.equals("pno")) {
                         if (str3[i].equals(anothernewobj.get(s).toString().toLowerCase()) == true) {
                             newarr.add(anothernewobj);
@@ -272,31 +242,30 @@ class AddressBook extends BubbleSort {
         JSONParser parser = new JSONParser();
         try {
             Object o = parser.parse(new FileReader("book.json"));
-            JSONObject jobj = (JSONObject) o;
-            String str = jobj.toString();
-            JSONArray array = (JSONArray) jobj.get("data");
+            JSONObject addressbook = (JSONObject) o;
+            String str = addressbook.toString();
+            JSONArray data = (JSONArray) addressbook.get("data");
             System.out.println("Enter " + s + " you want to search");
             String search = sc.nextLine().toLowerCase();
             boolean b = false;
-            for (int i = 0; i < array.size(); i++) {
-                JSONObject jobj1 = (JSONObject) array.get(i);
-                JSONArray arr = (JSONArray) jobj1.get("Address");
-                JSONObject ob = (JSONObject) arr.get(0);
+            for (int i = 0; i < data.size(); i++) {
+                JSONObject person = (JSONObject) data.get(i);
+                JSONArray address = (JSONArray) person.get("Address");
+                JSONObject addressob = (JSONObject) address.get(0);
     
-                if (jobj1.get("name").toString().toLowerCase().equals(search)
-                        || jobj1.get("pno").toString().toLowerCase().equals(search)
-                        || ob.get("zip").toString().toLowerCase().equals(search)
-                        || ob.get("state").toString().toLowerCase().equals(search)
-                        || ob.get("aprt").toString().toLowerCase().equals(search)
-                        || ob.get("city").toString().toLowerCase().equals(search)) {
-                    b = true;
-           
-                    System.out.println("Name :" + jobj1.get("name"));
-                    System.out.println("PhoneNo :" + jobj1.get("pno"));
-                    System.out.println("Zip :" + ob.get("zip"));
-                    System.out.println("Apartment :" + ob.get("aprt")); 
-                    System.out.println("City :" + ob.get("city"));
-                    System.out.println("State :" + ob.get("state"));
+                if (person.get("name").toString().toLowerCase().equals(search)
+                        || person.get("pno").toString().toLowerCase().equals(search)
+                        || addressob.get("zip").toString().toLowerCase().equals(search)
+                        || addressob.get("state").toString().toLowerCase().equals(search)
+                        || addressob.get("aprt").toString().toLowerCase().equals(search)
+                        || addressob.get("city").toString().toLowerCase().equals(search)) {
+                    b = true;           
+                    System.out.println("Name :" + person.get("name"));
+                    System.out.println("PhoneNo :" + person.get("pno"));
+                    System.out.println("Zip :" + addressob.get("zip"));
+                    System.out.println("Apartment :" + addressob.get("aprt")); 
+                    System.out.println("City :" + addressob.get("city"));
+                    System.out.println("State :" + addressob.get("state"));
                 }
             }
             if (b == false) {
@@ -306,3 +275,29 @@ class AddressBook extends BubbleSort {
         }
     }
 }
+
+class BubbleSort
+{
+	public static <P extends Comparable<P>> void bubble(P[] arr,int length) 
+	{	
+		int n=length;
+		for(int i=0;i<n-1;i++) 
+		{
+			for(int j=0;j<n-i-1;j++)
+			{
+				if(arr[j].compareTo(arr[j+1])>0)
+				{
+					P temp=arr[j];
+					arr[j]=arr[j+1];
+					arr[j+1]=temp;
+				}
+			}
+			
+		}
+		for(int x=0;x<n;++x)
+		{
+			System.out.print(arr[x]+" ");
+			System.out.println();
+		}
+	}
+}  
